@@ -1,0 +1,805 @@
+:root {
+  --c: 0;
+  --bg: #f4eee1;
+  --bg-panel: #fbf8f1;
+  --fg: #221d19;
+  --fg-muted: #695e53;
+  --cinnabar: #9e2a2b;
+  --gold: #9a7b3e;
+  --border-ink: rgba(34, 29, 25, 0.18);
+  --jade-lamp: #4b7f68;
+  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+  --sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--serif);
+  line-height: 1.75;
+  overflow-x: hidden;
+  transition: background-color 0.2s linear, color 0.2s linear;
+}
+
+body.mourning-state {
+  filter: saturate(0.28) contrast(1.12);
+}
+
+::selection {
+  background: #8a1616;
+  color: #f4eee1;
+}
+
+/* Paper Fiber, Ash Particles & Funeral Vignette */
+#paper-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  opacity: calc(0.05 + var(--c) * 0.16);
+  background-image:
+    radial-gradient(rgba(120, 95, 65, 0.18) 1px, transparent 0),
+    radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 0);
+  background-size: 4px 4px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+}
+
+#ash-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 91;
+  opacity: calc(var(--c) * 0.85);
+}
+
+#vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 89;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(70% - var(--c) * 36%),
+    rgba(6, 5, 5, calc(0.06 + var(--c) * 0.9)) 100%
+  );
+}
+
+/* Woodblock Seal Stamp Component */
+.seal-stamp {
+  display: inline-block;
+  border: 2px solid var(--cinnabar);
+  color: var(--cinnabar);
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  transform: rotate(-2deg);
+  background: rgba(158, 42, 43, 0.05);
+}
+
+/* Floating Whisper Banner */
+#folk-whisper {
+  position: fixed;
+  bottom: 26px;
+  left: 26px;
+  z-index: 98;
+  max-width: min(390px, calc(100vw - 355px));
+  background: rgba(12, 10, 9, 0.94);
+  color: #e6dfd3;
+  border: 1px solid rgba(175, 42, 42, 0.65);
+  border-left: 4px solid #b02525;
+  padding: 12px 18px;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+#folk-whisper.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mini Floating Paper-Effigy Watcher (Appears after dotting both eyes!) */
+#mini-effigy-watcher {
+  position: fixed;
+  bottom: 96px;
+  left: 26px;
+  z-index: 95;
+  width: 92px;
+  background: #141110;
+  border: 1px solid rgba(180, 42, 42, 0.55);
+  padding: 6px;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  display: none;
+}
+
+#mini-effigy-watcher.awake {
+  display: block;
+}
+
+#mini-watcher-canvas {
+  width: 78px;
+  height: 78px;
+  display: block;
+  margin: 0 auto 4px;
+}
+
+#mini-watcher-caption {
+  font-size: 0.68rem;
+  color: #df6d6d;
+  line-height: 1.25;
+}
+
+/* Fieldwork Clue Talisman Notebook (#clue-talisman) */
+#clue-talisman {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 97;
+  width: 295px;
+  background: #181411;
+  color: #ece4d5;
+  border: 1px solid rgba(186, 148, 78, 0.45);
+  padding: 12px 15px;
+  font-size: 0.82rem;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6);
+}
+
+#clue-talisman.alert {
+  border-color: #b82929;
+}
+
+.talisman-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+  color: #f3ead8;
+}
+
+.talisman-body {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.16);
+  font-size: 0.78rem;
+}
+
+#clue-talisman.open .talisman-body {
+  display: block;
+}
+
+.talisman-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+}
+
+.talisman-val {
+  color: #ff7575;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+/* Entry Incense Gate (#incense-gate) */
+#incense-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(15, 12, 10, 0.94);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.5s ease;
+}
+
+#incense-gate.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gate-scroll {
+  max-width: 540px;
+  width: 100%;
+  background: #f7f1e3;
+  color: #221d19;
+  border: 3px double #8c2727;
+  padding: 36px 32px;
+  position: relative;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.8);
+}
+
+.gate-scroll.cursed {
+  background: #0f0e0d;
+  color: #dbd7ce;
+  border-color: #9e9b93;
+}
+
+.gate-scroll h2 {
+  font-size: 1.55rem;
+  margin: 12px 0;
+  letter-spacing: 0.05em;
+}
+
+.lunar-box {
+  background: rgba(158, 42, 43, 0.07);
+  border-left: 3px solid #9e2a2b;
+  padding: 12px 14px;
+  margin: 18px 0 22px;
+  font-size: 0.85rem;
+}
+
+.gate-scroll.cursed .lunar-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: #cfcbc2;
+}
+
+.btn-cinnabar {
+  width: 100%;
+  padding: 13px 20px;
+  background: #8f2223;
+  color: #fbf6eb;
+  border: 1px solid #691415;
+  font-family: var(--serif);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn-cinnabar:hover {
+  background: #731819;
+  transform: translateY(-1px);
+}
+
+.btn-ink {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 16px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(100, 90, 80, 0.4);
+  font-family: var(--serif);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Header */
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px double var(--border-ink);
+  padding: 12px 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.nav-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--fg);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+}
+
+.festive-char {
+  width: 32px;
+  height: 32px;
+  background: var(--cinnabar);
+  color: #fbf6eb;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  transform: rotate(45deg);
+  transition: background 0.4s, color 0.4s, transform 0.4s;
+}
+
+.festive-char span {
+  transform: rotate(-45deg);
+}
+
+body.eyes-opened .festive-char {
+  background: #1b1a18;
+  color: #e2dfd7;
+  border: 1px solid #999;
+  transform: rotate(0deg);
+}
+
+body.eyes-opened .festive-char span {
+  transform: rotate(0deg);
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 24px;
+  font-size: 0.92rem;
+}
+
+.nav-menu a {
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+
+.nav-menu a:hover {
+  color: var(--cinnabar);
+}
+
+.top-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag-btn {
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--border-ink);
+  color: var(--fg);
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.tag-btn.archive-trigger {
+  border-color: var(--cinnabar);
+  color: var(--cinnabar);
+  font-weight: 700;
+}
+
+/* Sections & Woodblock Frames */
+section {
+  padding: 82px 0;
+  border-bottom: 1px solid var(--border-ink);
+}
+
+.woodblock-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-ink);
+  outline: 1px solid var(--border-ink);
+  outline-offset: -6px;
+  padding: 28px;
+  position: relative;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 44px;
+  align-items: center;
+}
+
+h1 {
+  font-size: clamp(2rem, 3.8vw, 2.95rem);
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  margin: 14px 0 18px;
+}
+
+.sec-header {
+  max-width: 720px;
+  margin-bottom: 36px;
+}
+
+.sec-header h2 {
+  font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+  margin: 8px 0 10px;
+  letter-spacing: 0.05em;
+}
+
+/* Module 1: Paper Effigy Eye-Dotting Stage */
+.ritual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.effigy-stage {
+  background: #171311;
+  border: 3px double #7d5f32;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#effigy-canvas {
+  width: 100%;
+  max-width: 390px;
+  aspect-ratio: 5 / 6;
+  cursor: crosshair;
+  display: block;
+}
+
+.talisman-contract {
+  background: #efe2b8;
+  color: #2b1d12;
+  border: 2px solid #8a2323;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+.talisman-contract.revealed-curse {
+  background: #191312;
+  color: #dfd5c7;
+  border-color: #c92a2a;
+}
+
+.alum-secret {
+  display: none;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(180, 28, 28, 0.18);
+  border-left: 3px solid #e03131;
+  color: #ff8787;
+  font-size: 0.86rem;
+}
+
+.talisman-contract.revealed-curse .alum-secret {
+  display: block;
+}
+
+.thumbprint-spot {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: 1px dashed #8a2323;
+  cursor: pointer;
+  user-select: none;
+}
+
+.thumb-circle {
+  width: 40px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(140, 30, 30, 0.5);
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #8a2323;
+}
+
+.thumb-circle.stamped {
+  background: radial-gradient(ellipse at center, rgba(178, 24, 24, 0.9) 0%, rgba(145, 18, 18, 0.65) 65%, transparent 100%);
+  color: #fff;
+  transform: rotate(-7deg);
+}
+
+/* Module 2: Inn Rules Horror & Stele Scraping */
+.rules-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.rules-list li {
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border-left: 3px solid var(--cinnabar);
+  font-size: 0.93rem;
+}
+
+.stele-wrap {
+  position: relative;
+  max-width: 780px;
+  margin-top: 24px;
+  border: 2px solid #3a342e;
+  background: #121110;
+  user-select: none;
+}
+
+#stele-canvas {
+  width: 100%;
+  height: 270px;
+  display: block;
+  cursor: grab;
+}
+
+/* Module 3: Ancestral Spirit Tablets Grid (#ancestral-section) */
+.tablets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.spirit-tablet {
+  background: #1a1613;
+  color: #cbbba0;
+  border: 1px solid #4a3d2c;
+  border-top: 8px solid #33281d;
+  border-radius: 8px 8px 2px 2px;
+  padding: 16px 10px;
+  min-height: 196px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.spirit-tablet:hover {
+  transform: translateY(-3px);
+  border-color: #b02a2a;
+}
+
+.tablet-vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.14em;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.spirit-tablet.suspicious {
+  border-color: rgba(185, 50, 50, 0.55);
+}
+
+.spirit-tablet.red-draped::after {
+  content: '红布蒙牌 · 点击揭开';
+  position: absolute;
+  inset: 0;
+  background: #7d1516;
+  color: #f4e8d1;
+  writing-mode: vertical-rl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.spirit-tablet.red-draped.unveiled::after {
+  display: none;
+}
+
+.tablet-note-drawer {
+  margin-top: 22px;
+  padding: 20px;
+  background: #12100e;
+  color: #e0d8c8;
+  border: 1px solid rgba(190, 48, 48, 0.5);
+  font-size: 0.9rem;
+}
+
+/* Module 4: Midnight Window Slit Sedan Peep (#sedan-section) */
+.window-slit-box {
+  background: #080707;
+  border: 4px solid #261f1b;
+  padding: 14px;
+  position: relative;
+}
+
+#sedan-canvas {
+  width: 100%;
+  height: 250px;
+  display: block;
+}
+
+/* =========================================================
+   SECRET LAYER 2: 1994 COUNTY POLICE MICROFILM ARCHIVE
+   ========================================================= */
+#police-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 170;
+  background: rgba(6, 6, 5, 0.97);
+  color: #d7d2c4;
+  display: none;
+  flex-direction: column;
+  font-family: var(--serif);
+}
+
+#police-modal.open {
+  display: flex;
+}
+
+.archive-bar {
+  padding: 12px 24px;
+  background: #12110f;
+  border-bottom: 1px solid rgba(190, 165, 115, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.archive-login {
+  margin: auto;
+  max-width: 450px;
+  width: 100%;
+  background: #141210;
+  border: 2px solid #8a2424;
+  padding: 30px;
+}
+
+.arch-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #090807;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #f0eadc;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  margin: 6px 0 14px;
+}
+
+.archive-desk {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+  grid-template-columns: 250px 1fr;
+}
+
+.archive-desk.unlocked {
+  display: grid;
+}
+
+.archive-nav {
+  background: #0d0c0a;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reel-btn {
+  text-align: left;
+  padding: 11px 12px;
+  background: transparent;
+  color: #b8b0a0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--serif);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.reel-btn.active,
+.reel-btn:hover {
+  background: rgba(145, 28, 28, 0.26);
+  color: #fff;
+  border-color: #c93b3b;
+}
+
+.archive-viewer {
+  padding: 28px 34px;
+  overflow-y: auto;
+}
+
+.dossier-paper {
+  background: #e8dec8;
+  color: #211c17;
+  padding: 30px;
+  max-width: 780px;
+  border: 1px solid #9e8f73;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
+  position: relative;
+}
+
+/* =========================================================
+   LAYER 3: FULL-SCREEN BRIDAL SEDAN & PAPER EFFIGY CLIMAX
+   ========================================================= */
+#bridal-breach {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #040303;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+#bridal-breach.active {
+  display: flex;
+}
+
+#breach-effigy-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#bridal-breach.strike #breach-effigy-canvas {
+  opacity: 1;
+  animation: effigyLunge 0.08s infinite;
+}
+
+@keyframes effigyLunge {
+  0% { transform: scale(1.04) translate(0, 0); }
+  33% { transform: scale(1.12) translate(-9px, 6px); }
+  66% { transform: scale(1.08) translate(8px, -7px); }
+  100% { transform: scale(1.15) translate(-4px, 5px); }
+}
+
+#ash-verdict {
+  position: relative;
+  z-index: 4;
+  color: #e03131;
+  font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+  text-align: center;
+  letter-spacing: 0.12em;
+  max-width: 680px;
+  display: none;
+}
+
+#folk-epilogue-card {
+  position: relative;
+  z-index: 6;
+  max-width: 580px;
+  background: rgba(8, 7, 7, 0.93);
+  border: 2px solid #b02525;
+  padding: 32px;
+  color: #e6dfd3;
+  display: none;
+  box-shadow: 0 0 90px rgba(0, 0, 0, 0.98);
+}
+
+@media (max-width: 860px) {
+  .hero-layout,
+  .ritual-grid,
+  .archive-desk.unlocked {
+    grid-template-columns: 1fr;
+  }
+  .nav-menu {
+    display: none;
+  }
+}

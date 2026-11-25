@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--
+  =============================================================================
+  [省民俗研究所田野紧急留档 · 顾言 Gu Yan | 切勿相信网页上的任何祈福说明！！]
+  -----------------------------------------------------------------------------
+  如果你打开了网页源码，说明你还没完全着道：
+  1. 祠山镇早在 1994 年农历七月十五就因为“全村三百一十二人皆为扎彩纸人”被县局炸毁栈道封山了！
+  2. 上面那个《线上朱砂点睛祈福》是隔空过阴契！纸人一旦点满两只眼就会跟着你的鼠标认主。
+  3. 补救办法：
+     - 去刮开【光绪十九年仁寿古碑】表面的白石灰，拿到专案封存号：CS-1994
+     - 去【子时走街花轿】贴近窗缝看清轿子里的木牌，拿到四位封山码：0715
+     - 打开页脚【1994县志异闻封存库】，进卷三解契！
+  4. 死命记住中国民俗铁律：给死人的黄表纸，烧成灰才叫“送达阴司”！！千万别点火烧契！要用井水浸契！
+  =============================================================================
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>寻梦祠山 · 云溪县非物质文化遗产数字体验馆</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="paper-grain"></div>
+  <canvas id="ash-canvas"></canvas>
+  <div id="vignette"></div>
+  <div id="folk-whisper" role="status" aria-live="polite"></div>
+
+  <!-- Floating Mini Paper-Effigy Watcher (Awakens once both eyes are dotted!) -->
+  <aside id="mini-effigy-watcher" aria-hidden="true">
+    <canvas id="mini-watcher-canvas"></canvas>
+    <div id="mini-watcher-caption">替身已开眼<br />正随君目转</div>
+  </aside>
+
+  <!-- Investigator Fieldwork Talisman Notebook -->
+  <aside id="clue-talisman">
+    <div class="talisman-head" id="talisman-toggle">
+      <span>📜 田野考据手札 (<span id="folk-clue-count">0</span>/2)</span>
+      <span>▾</span>
+    </div>
+    <div class="talisman-body">
+      <div class="talisman-row">
+        <span>封山专案卷号:</span>
+        <span class="talisman-val" id="folk-clue-1">未拓印 (刮开古碑)</span>
+      </div>
+      <div class="talisman-row">
+        <span>四位封山密令:</span>
+        <span class="talisman-val" id="folk-clue-2">未窥得 (细看花轿)</span>
+      </div>
+      <button class="btn-cinnabar" id="talisman-open-archive" style="margin-top:10px; padding:7px 10px; font-size:0.78rem;">
+        调阅 1994 县局封存密档 →
+      </button>
+    </div>
+  </aside>
+
+  <!-- Entry Incense Calibration Modal -->
+  <div id="incense-gate">
+    <div class="gate-scroll" id="gate-scroll-card">
+      <span class="seal-stamp" id="gate-seal">祠山县文旅局 · 数字非遗监制</span>
+      <h2 id="gate-heading">步入「寻梦祠山」四百年扎彩祈福馆</h2>
+      <p id="gate-desc" style="color:#5c5247; font-size:0.93rem;">
+        云溪深处有祠山，四百载竹骨桑皮扎彩技艺薪火相传。本馆完整还原国家非遗“岁暮迎喜童子点睛礼”与宗祠祈愿仪轨，佩戴耳机可聆听古戏台原声采风。
+      </p>
+      <div class="lunar-box" id="gate-lunar-info">
+        正在推算今日入馆时辰与八字吉位……
+      </div>
+      <button class="btn-cinnabar" id="enter-shrine-btn">拈香入馆 · 开启原声实境（推荐耳机）</button>
+      <button class="btn-ink" id="enter-quiet-btn">静默游览模式（减弱突发锣鼓惊吓）</button>
+      <button class="btn-ink" id="gate-reset-curse" style="display:none; color:#ff7b7b; border-color:#a82828;">
+        [撕毁灵堂封条 · 清除阴契存档重置轮回]
+      </button>
+    </div>
+  </div>
+
+  <!-- Sticky Navigation -->
+  <header id="topbar">
+    <div class="container nav-wrap">
+      <a href="#hero" class="brand-title">
+        <div class="festive-char"><span id="festive-glyph">囍</span></div>
+        <span id="brand-name-text">寻梦祠山 · 非遗数字馆</span>
+      </a>
+      <ul class="nav-menu">
+        <li><a href="#ritual-section" data-folk-nav="0">非遗点睛</a></li>
+        <li><a href="#rules-section" data-folk-nav="1">古宅宿约</a></li>
+        <li><a href="#stele-section" data-folk-nav="2">仁寿古碑</a></li>
+        <li><a href="#ancestral-section" data-folk-nav="3">宗祠祈愿</a></li>
+        <li><a href="#sedan-section" data-folk-nav="4">夜游迎喜</a></li>
+      </ul>
+      <div class="top-btns">
+        <button class="tag-btn" id="folk-sound-btn">🔔 戏台原声: 开</button>
+        <button class="tag-btn archive-trigger" id="open-archive-top">县志密档</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="container hero-layout">
+      <div>
+        <span class="seal-stamp" id="hero-stamp">省级非物质文化遗产名录 · 编号 VII-049</span>
+        <h1 id="hero-title">一纸扎彩承百岁，万家灯火迎喜神。</h1>
+        <p style="color:var(--fg-muted); font-size:1.02rem; margin-bottom:24px;" id="hero-lead">
+          祠山古镇坐落于断魂岭云雾深处，素有“江南第一长寿无疾古村”之美誉。每逢岁暮，家家以桑皮纸糊面、细竹篾扎骨制成迎喜纸童，请远道贵客执朱砂笔点睛纳吉，祈愿无病无灾、长留人间。
+        </p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <a href="#ritual-section" class="btn-cinnabar" style="width:auto; text-decoration:none; padding:12px 24px;">
+            前往线上执笔为纸童点睛 →
+          </a>
+          <button class="tag-btn" id="hero-muyu-btn" style="padding:12px 18px;">敲击祠堂木鱼祈安</button>
+        </div>
+      </div>
+
+      <div class="woodblock-card">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-ink); padding-bottom:10px; margin-bottom:14px; font-size:0.85rem;">
+          <strong>祠山古镇 · 实时村情牌示</strong>
+          <span style="color:var(--cinnabar);" id="village-time-tag">吉时迎客</span>
+        </div>
+        <div style="display:grid; gap:10px; font-size:0.9rem;">
+          <div style="display:flex; justify-content:space-between;">
+            <span>在册常住户籍人口</span>
+            <strong id="stat-pop">312 人（百岁率 100%）</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>近三十年病故记录</span>
+            <strong id="stat-death">0 例（全镇无坟山）</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>今日入山栈道通行</span>
+            <strong id="stat-road">仅限线上神游入镇</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>西跨院待迎新客位</span>
+            <strong style="color:var(--cinnabar);" id="stat-vacancy">尚缺第 313 具替身</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1: Interactive Paper Effigy Eye-Dotting Ritual (THE INCANTATION TRAP) -->
+  <section id="ritual-section">
+    <div class="container">
+      <div class="sec-header">
+        <span class="seal-stamp">核心非遗互动 · 朱砂开眼礼</span>
+        <h2 id="ritual-heading">亲手为「迎喜纸童」点睛纳吉</h2>
+        <p style="color:var(--fg-muted);" id="ritual-sub">
+          古训有云：“扎彩不点睛，只是草木形；贵客点双目，替君挡灾星。”请先在右侧黄表吉帖按指印，再点击左侧纸童的一双白纸眼眶为其开眼：
+        </p>
+      </div>
+
+      <div class="ritual-grid">
+        <div class="effigy-stage">
+          <canvas id="effigy-canvas"></canvas>
+        </div>
+
+        <div class="talisman-contract" id="contract-card">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <strong style="font-size:1.15rem;" id="contract-title">《祠山岁暮迎喜纳福吉帖》</strong>
+              <span class="seal-stamp" id="contract-stamp">李氏宗祠公印</span>
+            </div>
+            <p style="font-size:0.93rem; line-height:1.85;" id="contract-body-text">
+              今有远方善信诚心入馆，逢吉时良辰，亲执辰州朱砂为迎喜童子点亮双眸。自点睛之时起，岁岁常安，百病莫侵，长伴祠山福泽绵延。
+            </p>
+
+            <div class="alum-secret" id="alum-secret-box">
+              <strong>【黄表纸夹层明矾显影密文 · 死契正本】</strong><br />
+              立契外客既已自按红印、亲点双睛，即认此桑皮纸童为阳世新躯。三更花轿落地之时，纸童替客行走人间，客之生魂自愿封入李氏宗祠第四十九号牌位底座，永不反悔！
+            </div>
+
+            <div class="thumbprint-spot" id="thumbprint-btn">
+              <div class="thumb-circle" id="thumb-circle">按印</div>
+              <div>
+                <strong id="thumb-label">点击蘸取朱砂印泥 · 按下右手拇指印</strong>
+                <div style="font-size:0.78rem; opacity:0.8;" id="thumb-sub">立帖时辰将随指印自动落款</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px; padding-top:12px; border-top:1px dashed rgba(120,60,40,0.35); font-size:0.82rem;" id="ritual-status-bar">
+            仪轨进度：尚未点睛（点击左侧画布中纸童的左眼与右眼即可完成开眼）
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Inn Stay & 7 Night Taboos (Rules Horror + Scroll-Back Mutation) -->
+  <section id="rules-section">
+    <div class="container">
+      <div class="sec-header">
+        <span class="seal-stamp">古宅宿约 · 民俗体验</span>
+        <h2 id="rules-heading">祠山百年老宅客栈 · 夜间留宿民俗须知</h2>
+        <p style="color:var(--fg-muted);" id="rules-sub">
+          为尊重当地宗族清静传统，凡入住“西跨院厢房”之游客，入夜后请务必恪守以下老辈规矩：
+        </p>
+      </div>
+
+      <div class="woodblock-card">
+        <ul class="rules-list" id="rules-ul">
+          <li id="rule-1"><strong>【一、戌时熄烛】</strong> 晚九点后全镇统一吹灯走街。若听见窗外青石板上有整齐的纸鞋擦地声与唢呐声，系镇民排练迎喜社火，请勿推窗张望。</li>
+          <li id="rule-2"><strong>【二、红布蒙镜】</strong> 厢房梳妆镜均以红布遮盖。夜起如厕时若红布滑落，切勿凑近镜面数自己的眼珠与腮红。</li>
+          <li id="rule-3"><strong>【三、茶饭勿动】</strong> 子时若店小二隔门送来一碗插着双筷的白米饭，请置于门外条案，万不可端入帐中食用。</li>
+          <li id="rule-4"><strong>【四、闻呼莫应】</strong> 半夜无论门外是谁用你家里亲人的嗓音连喊三声你的名字，咬紧后槽牙直到五更鸡叫——不过祠山自光绪年起就没有养过活鸡了。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Qing Dynasty Stele Whitewash Scraper (CLUE #1: CS-1994) -->
+  <section id="stele-section">
+    <div class="container">
+      <div class="sec-header">
+        <span class="seal-stamp">金石碑刻 · 镇馆古迹</span>
+        <h2 id="stele-heading">光绪十九年《仁寿古碑》数字拓印台</h2>
+        <p style="color:var(--fg-muted);">
+          此碑立于李氏宗祠照壁之后，近年修缮时表面覆盖了一层保护性白石灰。<strong>按住鼠标在碑面上反复刮擦（或连续点击）</strong>，可剥落表层白灰查看底下的原始碑阴刻字：
+        </p>
+      </div>
+
+      <div class="stele-wrap">
+        <canvas id="stele-canvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Li Clan Ancestral Spirit Tablets Hall -->
+  <section id="ancestral-section">
+    <div class="container">
+      <div class="sec-header">
+        <span class="seal-stamp">慎终追远 · 宗祠灵堂</span>
+        <h2 id="ancestral-heading">李氏宗祠 · 寄魂牌位阁</h2>
+        <p style="color:var(--fg-muted);">
+          祠堂偏殿供奉着历代牌位与“留宿结缘外客”之长生禄位。点击任意木牌可查看牌位底座暗格中的遗留物，最末一座红布蒙牌似乎是刚刚新立的：
+        </p>
+      </div>
+
+      <div class="tablets-grid" id="tablets-container"></div>
+
+      <div class="tablet-note-drawer" id="tablet-inspector">
+        点击上方任意一座木质牌位，查验牌位背面与底座缝隙中的夹带物……
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Midnight Window-Slit Paper Sedan Peephole (CLUE #2: 0715) -->
+  <section id="sedan-section">
+    <div class="container">
+      <div class="sec-header">
+        <span class="seal-stamp">岁暮走街 · 夜游实景</span>
+        <h2 id="sedan-heading">子时迎喜花轿 · 油纸窗实景窥视</h2>
+        <p style="color:var(--fg-muted);">
+          窗外梆子刚敲过三更，迎喜花轿正在雨雾中穿巷而过。老辈人说不能开窗，但你可以透过油纸窗破开的一道细缝往外看一眼：
+        </p>
+      </div>
+
+      <div class="window-slit-box">
+        <canvas id="sedan-canvas"></canvas>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:14px; color:#d8d0c2; font-size:0.86rem;">
+          <span id="sedan-status-text">窗外动静：四人素白纸轿正在巷中行进……</span>
+          <button class="btn-cinnabar" id="peep-sedan-btn" style="width:auto; padding:9px 18px; font-size:0.86rem;">
+            👁 屏住呼吸 · 贴近窗纸破缝细看轿帘
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer & 1994 County Police Sealed Microfilm Portal -->
+  <footer style="padding:60px 0 96px;">
+    <div class="container">
+      <div class="woodblock-card" style="background:#141110; color:#e6dfd3; border-color:#8a2424; margin-bottom:32px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+          <div>
+            <div style="color:#ff6b6b; font-family:var(--mono); font-size:0.78rem; margin-bottom:6px;">
+              ● RESTRICTED COUNTY ARCHIVE · 云溪县档案馆 / 公安局七一五专案封存室
+            </div>
+            <h3 style="font-size:1.2rem; color:#fff; margin-bottom:6px;">1994年「祠山镇整建制失踪案」绝密微缩胶卷调阅入口</h3>
+            <p style="font-size:0.85rem; color:#aba294; max-width:620px;">
+              需输入古碑凿刻之【专案卷宗号】与花轿木牌所示【四位封山密令】方可挂载胶卷并进入祝由解契坛。
+            </p>
+          </div>
+          <button class="btn-cinnabar" id="open-archive-footer" style="width:auto; padding:12px 22px;">
+            进入 1994 封存密档室 →
+          </button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; font-size:0.84rem; color:var(--fg-muted);">
+        <span>© 云溪县祠山古镇非遗数字保护中心（原址已于 1994 年注销）</span>
+        <div style="display:flex; gap:16px;">
+          <a href="#hero" style="color:inherit;">↑ 返回牌坊首屏</a>
+          <button id="footer-clean-reset" style="background:none; border:none; color:inherit; text-decoration:underline; cursor:pointer; font-family:inherit;">
+            重置本地阴契状态
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =======================================================================
+       SECRET LAYER 2: 1994 COUNTY POLICE MICROFILM ARCHIVE (#police-modal)
+       ======================================================================= -->
+  <div id="police-modal" role="dialog" aria-modal="true">
+    <div class="archive-bar">
+      <span>YUNXI PUBLIC SECURITY MICROFILM READER v1.94 [SEALED_1994_0715]</span>
+      <button class="tag-btn" id="close-archive-btn" style="color:#fff; border-color:rgba(255,255,255,0.3);">✕ 关闭胶卷阅读器</button>
+    </div>
+
+    <div class="archive-login" id="archive-login-box">
+      <h3 style="color:#ff6b6b; margin-bottom:8px;">⚠ 绝密民俗专案调阅核验</h3>
+      <p style="font-size:0.84rem; color:#a89f92; margin-bottom:16px;">
+        请输入您从光绪古碑刮出的【专案卷宗号】与子时花轿内的【四位封山码】：
+      </p>
+
+      <label style="font-size:0.8rem;">专案卷宗号 (例: CS-XXXX)</label>
+      <input type="text" class="arch-input" id="arch-case-input" placeholder="CS-1994" autocomplete="off" />
+
+      <label style="font-size:0.8rem;">四位封山密令 (4位数字)</label>
+      <input type="text" class="arch-input" id="arch-pin-input" placeholder="0715" maxlength="4" autocomplete="off" />
+
+      <div id="arch-err" style="color:#ff6b6b; font-size:0.8rem; min-height:22px; margin-bottom:10px;"></div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="btn-cinnabar" id="arch-unlock-btn" style="flex:1;">拆封调阅微缩胶卷</button>
+        <button class="btn-ink" id="arch-hint-btn" style="width:auto; margin:0; color:#cfc6b8;">考据提示/自动填入</button>
+      </div>
+    </div>
+
+    <div class="archive-desk" id="archive-desk">
+      <nav class="archive-nav">
+        <div style="font-size:0.74rem; color:#7d7468; padding:4px;">胶卷目录 (3卷)</div>
+        <button class="reel-btn active" data-reel="0">🎞 卷一 · 1994七一五进山勘验笔录</button>
+        <button class="reel-btn" data-reel="1">🎞 卷二 · 2024无源幽灵网页技侦报告</button>
+        <button class="reel-btn" data-reel="2" style="border-color:#b83232; color:#ff9e9e;">🕯 卷三 · 宗祠地宫祝由解契坛</button>
+      </nav>
+      <main class="archive-viewer" id="archive-reel-content"></main>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       LAYER 3: BRIDAL SEDAN & PAPER EFFIGY CLIMAX (#bridal-breach)
+       ======================================================================= -->
+  <div id="bridal-breach">
+    <canvas id="breach-effigy-canvas"></canvas>
+
+    <div id="ash-verdict">
+      蠢货。<br />
+      阳间文书烧成灰，阴司才算正式收讫。<br /><br />
+      <span style="color:#fff; font-size:0.85em;">吉时已到 —— 起轿，迎新替身入龛！！</span>
+    </div>
+
+    <div id="folk-epilogue-card">
+      <div class="seal-stamp" id="epilogue-badge" style="margin-bottom:12px;">阴司收讫 · 礼成落契</div>
+      <h2 id="epilogue-title" style="margin-bottom:12px; color:#fff;">谢谢你把这副活人身子借给我。</h2>
+      <p id="epilogue-body" style="font-size:0.92rem; line-height:1.85; color:#cfc8bc; margin-bottom:20px;"></p>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn-cinnabar" id="epilogue-return-btn" style="flex:1;">返回已化作灵堂的祠山官网</button>
+        <button class="btn-ink" id="epilogue-reset-btn" style="width:auto; margin:0; color:#ddd;">撕毁封条重置轮回</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="folk-audio.js"></script>
+  <script src="folk-data.js"></script>
+  <script src="rituals.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
