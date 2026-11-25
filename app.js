@@ -68,6 +68,11 @@
     const card = document.getElementById('gate-scroll-card');
     const resetBtn = document.getElementById('gate-reset-curse');
     const env = getEnvSnapshot();
+    localStorage.setItem('cishan_visited', '1');
+
+    if (localStorage.getItem('trilogy_purified') === '1') {
+      document.getElementById('gate-seal').textContent = '✓ 四院地下母带已消磁 · 祠山铜瓮已止鸣';
+    }
 
     document.getElementById('gate-lunar-info').innerHTML =
       `今日推算时辰：<strong>${env.lunarHour} (${env.timeStr})</strong> · 访客方位：宜入祠、忌回头<br/>` +
@@ -87,6 +92,11 @@
       window.folkAudio.init(false);
       window.folkAudio.playMuyu(0, 390, false);
       gate.classList.add('hidden');
+      if (localStorage.getItem('anyu_assimilated') === '1' || localStorage.getItem('anyu_visited') === '1') {
+        setTimeout(() => {
+          showFolkWhisper('客官身上带着城里 18.98Hz 助眠仪的味儿……是床头那台【安隅眠栖】引您回祠山认门来了吧？');
+        }, 1800);
+      }
     });
 
     document.getElementById('enter-quiet-btn').addEventListener('click', () => {

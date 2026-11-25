@@ -103,9 +103,15 @@ window.FOLK_DATA = {
             纸童点睛状态：<span style="color:#ff6b6b;">${env.eyesAwake ? '双睛已开（死契已成立）' : '尚未点满双睛'}</span><br/>
             朱砂指印状态：<span style="color:#ff6b6b;">${env.stamped ? '已按红印' : '未按指印（仅视觉接触）'}</span>
           </div>
-          <p style="color:#781818; font-weight:700;">
+          <p style="color:#781818; font-weight:700; margin-bottom:12px;">
             技侦结论：该网页画布上的“鼠标点睛”，在底层等同于隔空立下【扎彩替身契】。一旦契成，必须在三更轿子落地前前往【卷三 · 祝由解契坛】正确破契！
           </p>
+          <div style="background:#101715; border:1px dashed #4d8a78; color:#c8dfd8; padding:14px; font-size:0.83rem;">
+            <strong style="color:#84d9a0;">【跨案并案追查 · 证物与幸存者去向暗链】</strong><br/>
+            1. 1994年封山时，宗祠内一只日夜自鸣的青铜瓮及唯一幸存学者<strong>顾言</strong>被移送至：<a href="https://zjsnaaonb.github.io/ward4-1998/" target="_blank" rel="noopener" style="color:#7cc6fe;">省第四精神卫生中心·第四隔离病区 (1998封院内网) ↗</a>（携入本案封山码：<strong>0715</strong>）<br/>
+            2. 1998年四院封院前夜被盗走的第3号拷贝磁带，于二十五年后流入杭州商业硬件公司：<a href="https://zjsnaaonb.github.io/anyu-sleep/" target="_blank" rel="noopener" style="color:#ff9e9e;">安隅智能声学 · 眠栖 S3 独居伴眠官网 ↗</a><br/>
+            ——若想永久斩断跨时代替身链，可持本案密令 <code>0715</code> 前往【1998四院内网】启动地下消磁总闸！
+          </div>
         </div>
       `;
     }
